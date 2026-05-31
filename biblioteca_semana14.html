@@ -1,0 +1,667 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Biblioteca Escolar - Semana 13</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.min.css" rel="stylesheet">
+    <style>
+        body {
+            background-color: #f4f6f9;
+            transition: background-color 0.3s, color 0.3s;
+        }
+
+        /* ===== DARK MODE ===== */
+        .dark-mode {
+            background-color: #121212 !important;
+            color: #e0e0e0;
+        }
+        .dark-mode .card {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+            border-color: #333;
+        }
+        .dark-mode .card-footer {
+            background-color: #2a2a2a;
+            border-color: #333;
+        }
+        .dark-mode .modal-content {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+        .dark-mode .form-control,
+        .dark-mode .form-select {
+            background-color: #2a2a2a;
+            color: #e0e0e0;
+            border-color: #444;
+        }
+        .dark-mode .navbar {
+            background-color: #1565c0 !important;
+        }
+        .dark-mode .section-title {
+            color: #90caf9;
+        }
+        .dark-mode .stats-card {
+            background-color: #1e1e1e;
+            color: #e0e0e0;
+        }
+        .dark-mode .table {
+            color: #e0e0e0;
+        }
+        .dark-mode .table-striped > tbody > tr:nth-of-type(odd) {
+            background-color: rgba(255,255,255,0.05);
+        }
+
+        /* ===== NAVBAR ===== */
+        .navbar-brand {
+            font-weight: 700;
+            font-size: 1.3rem;
+        }
+
+        /* ===== CAROUSEL ===== */
+        .carousel-slide {
+            height: 280px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 12px;
+        }
+        @media (max-width: 576px) {
+            .carousel-slide { height: 200px; }
+            .carousel-slide h2 { font-size: 1.2rem; }
+            .carousel-slide p { font-size: 0.9rem; }
+        }
+
+        /* ===== STATS CARDS ===== */
+        .stats-card {
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            background: white;
+            transition: transform 0.2s;
+        }
+        .stats-card:hover { transform: translateY(-3px); }
+        .stats-card .stat-number {
+            font-size: 2rem;
+            font-weight: 700;
+        }
+        .stats-card .stat-label {
+            font-size: 0.85rem;
+            color: #6c757d;
+        }
+
+        /* ===== BOOK CARDS ===== */
+        .book-card {
+            transition: transform 0.2s, box-shadow 0.2s;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .book-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.15) !important;
+        }
+        .book-card .card-header {
+            border-radius: 0 !important;
+        }
+        .badge-categoria {
+            font-size: 0.7rem;
+            letter-spacing: 0.04em;
+        }
+
+        /* ===== TABLE (desktop view) ===== */
+        .table-wrapper {
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+
+        /* ===== RESPONSIVE VISIBILITY ===== */
+        /* Cards visible on mobile/tablet, hidden on desktop */
+        .cards-view { display: none; }
+        .table-view { display: block; }
+
+        @media (max-width: 991px) {
+            .cards-view { display: block; }
+            .table-view { display: none; }
+        }
+
+        /* ===== ALERTS ===== */
+        #alertas .alert {
+            border-radius: 10px;
+        }
+
+        /* ===== FOOTER ===== */
+        footer {
+            background: #0d6efd;
+            color: white;
+            padding: 1.5rem 0;
+            margin-top: 3rem;
+        }
+
+        /* ===== SECTION TITLES ===== */
+        .section-title {
+            font-weight: 700;
+            color: #0d6efd;
+            border-left: 4px solid #0d6efd;
+            padding-left: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        /* ===== MEDIA QUERY FINE-TUNING ===== */
+        @media (max-width: 576px) {
+            .card-body { padding: 0.75rem; }
+            .btn-sm { font-size: 0.75rem; padding: 0.25rem 0.5rem; }
+            .stats-card .stat-number { font-size: 1.5rem; }
+        }
+        @media (min-width: 768px) and (max-width: 991px) {
+            .book-card .card-title { font-size: 1rem; }
+        }
+    </style>
+</head>
+<body>
+
+<!-- ===== NAVBAR RESPONSIVO ===== -->
+<nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top shadow">
+    <div class="container">
+        <a class="navbar-brand" href="#inicio">
+            <i class="bi bi-book-half me-2"></i>Biblioteca Saber Digital
+        </a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+            aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto me-3">
+                <li class="nav-item"><a class="nav-link active" href="#inicio"><i class="bi bi-house me-1"></i>Inicio</a></li>
+                <li class="nav-item"><a class="nav-link" href="#estadisticas"><i class="bi bi-bar-chart me-1"></i>Estadísticas</a></li>
+                <li class="nav-item"><a class="nav-link" href="#catalogo"><i class="bi bi-collection me-1"></i>Catálogo</a></li>
+                <li class="nav-item"><a class="nav-link" href="#acerca"><i class="bi bi-info-circle me-1"></i>Acerca de</a></li>
+            </ul>
+            <div class="d-flex gap-2 align-items-center flex-wrap">
+                <input class="form-control form-control-sm" type="search" placeholder="Buscar libros..."
+                    id="searchInput" oninput="filtrarLibros()" style="width:180px">
+                <button class="btn btn-outline-light btn-sm" onclick="cambiarTema()" title="Cambiar tema">
+                    <i class="bi bi-moon-stars" id="iconTema"></i>
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<!-- ===== SECTION: INICIO ===== -->
+<section id="inicio">
+    <div class="container mt-4">
+
+        <!-- CARRUSEL DE RECOMENDACIONES -->
+        <div id="carouselRecomendaciones" class="carousel slide mb-4 rounded-3 overflow-hidden shadow" data-bs-ride="carousel">
+            <div class="carousel-indicators">
+                <button type="button" data-bs-target="#carouselRecomendaciones" data-bs-slide-to="0" class="active"></button>
+                <button type="button" data-bs-target="#carouselRecomendaciones" data-bs-slide-to="1"></button>
+                <button type="button" data-bs-target="#carouselRecomendaciones" data-bs-slide-to="2"></button>
+            </div>
+            <div class="carousel-inner">
+                <div class="carousel-item active">
+                    <div class="carousel-slide bg-primary">
+                        <div class="text-center text-white px-3">
+                            <h2>📚 Recomendación de la semana</h2>
+                            <p class="mb-3">"El Principito" — Antoine de Saint-Exupéry</p>
+                            <button class="btn btn-light btn-sm">Ver más</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="carousel-slide bg-success">
+                        <div class="text-center text-white px-3">
+                            <h2>🏆 Más prestado</h2>
+                            <p class="mb-3">"Cien años de soledad" — Gabriel García Márquez</p>
+                            <button class="btn btn-light btn-sm">Reservar</button>
+                        </div>
+                    </div>
+                </div>
+                <div class="carousel-item">
+                    <div class="carousel-slide" style="background:#e67e22;">
+                        <div class="text-center text-white px-3">
+                            <h2>🆕 Nuevo ingreso</h2>
+                            <p class="mb-3">"La chica del tren" — Paula Hawkins</p>
+                            <button class="btn btn-light btn-sm">Solicitar</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <button class="carousel-control-prev" type="button" data-bs-target="#carouselRecomendaciones" data-bs-slide="prev">
+                <span class="carousel-control-prev-icon"></span>
+            </button>
+            <button class="carousel-control-next" type="button" data-bs-target="#carouselRecomendaciones" data-bs-slide="next">
+                <span class="carousel-control-next-icon"></span>
+            </button>
+        </div>
+
+    </div>
+</section>
+
+<!-- ===== SECTION: ESTADÍSTICAS ===== -->
+<section id="estadisticas">
+    <div class="container mb-4">
+        <h4 class="section-title">📊 Estadísticas del Catálogo</h4>
+        <div class="row g-3" id="statsRow">
+            <div class="col-6 col-md-3">
+                <div class="stats-card">
+                    <div class="stat-number text-primary" id="statTotal">0</div>
+                    <div class="stat-label">Total de Libros</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stats-card">
+                    <div class="stat-number text-success" id="statDisponibles">0</div>
+                    <div class="stat-label">Disponibles</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stats-card">
+                    <div class="stat-number text-warning" id="statPrestados">0</div>
+                    <div class="stat-label">Prestados</div>
+                </div>
+            </div>
+            <div class="col-6 col-md-3">
+                <div class="stats-card">
+                    <div class="stat-number text-info" id="statLecturas">0</div>
+                    <div class="stat-label">Total Lecturas</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== SECTION: CATÁLOGO ===== -->
+<section id="catalogo">
+    <div class="container mb-5">
+        <div class="d-flex flex-wrap align-items-center justify-content-between gap-2 mb-3">
+            <h4 class="section-title mb-0">📖 Catálogo de Libros</h4>
+            <div class="d-flex gap-2 flex-wrap">
+                <select class="form-select form-select-sm" id="filtroCategoria" onchange="filtrarLibros()" style="width:auto">
+                    <option value="">Todas las categorías</option>
+                    <option>Ficción</option>
+                    <option>No ficción</option>
+                    <option>Ciencia</option>
+                    <option>Tecnología</option>
+                    <option>Historia</option>
+                    <option>Literatura</option>
+                    <option>Educación</option>
+                </select>
+                <button class="btn btn-primary btn-sm" data-bs-toggle="modal" data-bs-target="#modalLibro">
+                    <i class="bi bi-plus-circle me-1"></i>Agregar Libro
+                </button>
+                <button class="btn btn-outline-success btn-sm" onclick="mostrarReporte()">
+                    <i class="bi bi-bar-chart-line me-1"></i>Reporte
+                </button>
+            </div>
+        </div>
+
+        <div id="alertas"></div>
+
+        <!-- VISTA TARJETAS (móvil y tablet) -->
+        <div class="cards-view">
+            <div class="row g-3" id="cardsContainer"></div>
+        </div>
+
+        <!-- VISTA TABLA (desktop) -->
+        <div class="table-view">
+            <div class="table-wrapper">
+                <table class="table table-striped table-hover mb-0">
+                    <thead class="table-primary">
+                        <tr>
+                            <th>ID</th>
+                            <th>Título</th>
+                            <th>Autor</th>
+                            <th>Año</th>
+                            <th>Categoría</th>
+                            <th>Estado</th>
+                            <th>Lecturas</th>
+                            <th>Acciones</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tablaLibros"></tbody>
+                </table>
+            </div>
+        </div>
+
+        <p class="text-muted mt-2 small" id="contadorResultados"></p>
+    </div>
+</section>
+
+<!-- ===== SECTION: ACERCA DE ===== -->
+<section id="acerca" class="bg-white py-4 shadow-sm">
+    <div class="container">
+        <h4 class="section-title">ℹ️ Acerca de</h4>
+        <div class="row g-3">
+            <div class="col-12 col-md-4">
+                <div class="card h-100 border-0 bg-light">
+                    <div class="card-body text-center">
+                        <i class="bi bi-building fs-2 text-primary"></i>
+                        <h6 class="mt-2 fw-bold">Institución</h6>
+                        <p class="small text-muted mb-0">Biblioteca Saber Digital — Sistema de gestión de catálogo escolar.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="card h-100 border-0 bg-light">
+                    <div class="card-body text-center">
+                        <i class="bi bi-code-slash fs-2 text-success"></i>
+                        <h6 class="mt-2 fw-bold">Tecnología</h6>
+                        <p class="small text-muted mb-0">HTML5, CSS3, Bootstrap 5, JavaScript — Diseño Web I, Semana 13.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-md-4">
+                <div class="card h-100 border-0 bg-light">
+                    <div class="card-body text-center">
+                        <i class="bi bi-phone fs-2 text-warning"></i>
+                        <h6 class="mt-2 fw-bold">Responsive</h6>
+                        <p class="small text-muted mb-0">Compatible con escritorio, tablets y teléfonos móviles.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- ===== FOOTER ===== -->
+<footer>
+    <div class="container text-center">
+        <p class="mb-1"><i class="bi bi-book-half me-2"></i><strong>Biblioteca Saber Digital</strong></p>
+        <p class="mb-0 small opacity-75">Diseño Web I — Semana 13 · Bootstrap 5 Responsive Design</p>
+    </div>
+</footer>
+
+<!-- ===== MODAL AGREGAR LIBRO ===== -->
+<div class="modal fade" id="modalLibro" tabindex="-1" aria-labelledby="tituloModal" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title" id="tituloModal"><i class="bi bi-plus-circle me-2"></i>Agregar Nuevo Libro</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body">
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Título <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="titulo" placeholder="Título del libro" required>
+                </div>
+                <div class="mb-3">
+                    <label class="form-label fw-semibold">Autor <span class="text-danger">*</span></label>
+                    <input type="text" class="form-control" id="autor" placeholder="Nombre del autor" required>
+                </div>
+                <div class="row g-3">
+                    <div class="col-6">
+                        <label class="form-label fw-semibold">Año <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" id="anio" placeholder="Año" min="1000" max="2099" required>
+                    </div>
+                    <div class="col-6">
+                        <label class="form-label fw-semibold">Categoría</label>
+                        <select class="form-select" id="categoria">
+                            <option>Ficción</option>
+                            <option>No ficción</option>
+                            <option>Ciencia</option>
+                            <option>Tecnología</option>
+                            <option>Historia</option>
+                            <option>Literatura</option>
+                            <option>Educación</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
+                <button type="button" class="btn btn-primary" onclick="agregarLibro()">
+                    <i class="bi bi-save me-1"></i>Guardar Libro
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ===== MODAL DETALLE LIBRO ===== -->
+<div class="modal fade" id="modalDetalle" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-header bg-info text-white">
+                <h5 class="modal-title"><i class="bi bi-info-circle me-2"></i>Detalle del Libro</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <div class="modal-body" id="detalleContenido"></div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+// ===== DATA =====
+let libros = [
+    { id: 1, titulo: "El Principito",          autor: "Antoine de Saint-Exupéry", anio: 1943, categoria: "Literatura",  disponible: true,  lecturas: 45 },
+    { id: 2, titulo: "Cien años de soledad",   autor: "Gabriel García Márquez",   anio: 1967, categoria: "Literatura",  disponible: false, lecturas: 72 },
+    { id: 3, titulo: "Sapiens",                autor: "Yuval Noah Harari",        anio: 2011, categoria: "Historia",    disponible: true,  lecturas: 38 },
+    { id: 4, titulo: "Python para todos",      autor: "Charles Severance",        anio: 2016, categoria: "Tecnología", disponible: true,  lecturas: 29 },
+    { id: 5, titulo: "El universo en tu mano", autor: "Christophe Galfard",       anio: 2015, categoria: "Ciencia",    disponible: false, lecturas: 21 },
+    { id: 6, titulo: "Hábitos atómicos",       autor: "James Clear",              anio: 2018, categoria: "No ficción", disponible: true,  lecturas: 55 },
+];
+let nextId = 7;
+let modoOscuro = false;
+
+const COLORES_CAT = {
+    "Literatura": "success", "Historia": "warning", "Tecnología": "primary",
+    "Ciencia": "info", "Ficción": "danger", "No ficción": "secondary",
+    "Educación": "dark"
+};
+
+// ===== RENDER =====
+function renderizar() {
+    const busqueda = (document.getElementById('searchInput')?.value || '').toLowerCase();
+    const catFiltro = document.getElementById('filtroCategoria')?.value || '';
+
+    const filtrados = libros.filter(l =>
+        (l.titulo.toLowerCase().includes(busqueda) || l.autor.toLowerCase().includes(busqueda)) &&
+        (!catFiltro || l.categoria === catFiltro)
+    );
+
+    renderCards(filtrados);
+    renderTabla(filtrados);
+    actualizarStats();
+
+    const cont = document.getElementById('contadorResultados');
+    if (cont) {
+        cont.textContent = filtrados.length < libros.length
+            ? `Mostrando ${filtrados.length} de ${libros.length} libros`
+            : `${libros.length} libros en el catálogo`;
+    }
+}
+
+function renderCards(datos) {
+    const container = document.getElementById('cardsContainer');
+    if (!container) return;
+    container.innerHTML = '';
+
+    if (datos.length === 0) {
+        container.innerHTML = `<div class="col-12 text-center text-muted py-5">
+            <i class="bi bi-search fs-1 d-block mb-2"></i>No se encontraron libros.</div>`;
+        return;
+    }
+
+    datos.forEach(l => {
+        const col = document.createElement('div');
+        col.className = 'col-12 col-sm-6 col-lg-4';
+        const color = COLORES_CAT[l.categoria] || 'secondary';
+        col.innerHTML = `
+        <div class="card h-100 shadow-sm book-card">
+            <div class="card-header bg-${color} text-white d-flex align-items-center justify-content-between">
+                <h6 class="card-title mb-0 text-truncate me-2">📖 ${l.titulo}</h6>
+                <span class="badge bg-white text-${color} badge-categoria">${l.categoria}</span>
+            </div>
+            <div class="card-body">
+                <p class="mb-1"><i class="bi bi-person me-1 text-muted"></i><strong>Autor:</strong> ${l.autor}</p>
+                <p class="mb-1"><i class="bi bi-calendar me-1 text-muted"></i><strong>Año:</strong> ${l.anio}</p>
+                <p class="mb-2"><i class="bi bi-book me-1 text-muted"></i><strong>Lecturas:</strong> ${l.lecturas}</p>
+                <span class="badge ${l.disponible ? 'bg-success' : 'bg-warning text-dark'}">
+                    <i class="bi bi-${l.disponible ? 'check-circle' : 'clock'} me-1"></i>
+                    ${l.disponible ? 'Disponible' : 'Prestado'}
+                </span>
+            </div>
+            <div class="card-footer d-flex gap-2">
+                <button class="btn btn-outline-primary btn-sm flex-fill" onclick="verDetalles(${l.id})">
+                    <i class="bi bi-eye me-1"></i>Ver
+                </button>
+                <button class="btn btn-outline-${l.disponible ? 'warning' : 'success'} btn-sm flex-fill"
+                    onclick="toggleEstado(${l.id})">
+                    <i class="bi bi-arrow-repeat me-1"></i>${l.disponible ? 'Prestar' : 'Devolver'}
+                </button>
+                <button class="btn btn-outline-danger btn-sm" onclick="eliminarLibro(${l.id})">
+                    <i class="bi bi-trash"></i>
+                </button>
+            </div>
+        </div>`;
+        container.appendChild(col);
+    });
+}
+
+function renderTabla(datos) {
+    const tbody = document.getElementById('tablaLibros');
+    if (!tbody) return;
+    tbody.innerHTML = '';
+
+    if (datos.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="8" class="text-center text-muted py-4">No se encontraron libros.</td></tr>`;
+        return;
+    }
+
+    datos.forEach(l => {
+        const color = COLORES_CAT[l.categoria] || 'secondary';
+        const tr = document.createElement('tr');
+        tr.innerHTML = `
+            <td>${l.id}</td>
+            <td>${l.titulo}</td>
+            <td>${l.autor}</td>
+            <td>${l.anio}</td>
+            <td><span class="badge bg-${color}">${l.categoria}</span></td>
+            <td><span class="badge ${l.disponible ? 'bg-success' : 'bg-warning text-dark'}">
+                ${l.disponible ? 'Disponible' : 'Prestado'}</span></td>
+            <td>${l.lecturas}</td>
+            <td>
+                <div class="d-flex gap-1">
+                    <button class="btn btn-outline-primary btn-sm" onclick="verDetalles(${l.id})" title="Ver detalle">
+                        <i class="bi bi-eye"></i></button>
+                    <button class="btn btn-outline-${l.disponible ? 'warning' : 'success'} btn-sm"
+                        onclick="toggleEstado(${l.id})" title="${l.disponible ? 'Prestar' : 'Devolver'}">
+                        <i class="bi bi-arrow-repeat"></i></button>
+                    <button class="btn btn-outline-danger btn-sm" onclick="eliminarLibro(${l.id})" title="Eliminar">
+                        <i class="bi bi-trash"></i></button>
+                </div>
+            </td>`;
+        tbody.appendChild(tr);
+    });
+}
+
+function actualizarStats() {
+    document.getElementById('statTotal').textContent = libros.length;
+    document.getElementById('statDisponibles').textContent = libros.filter(l => l.disponible).length;
+    document.getElementById('statPrestados').textContent = libros.filter(l => !l.disponible).length;
+    document.getElementById('statLecturas').textContent = libros.reduce((a, l) => a + l.lecturas, 0);
+}
+
+// ===== ACCIONES =====
+function filtrarLibros() { renderizar(); }
+
+function agregarLibro() {
+    const titulo = document.getElementById('titulo').value.trim();
+    const autor  = document.getElementById('autor').value.trim();
+    const anio   = parseInt(document.getElementById('anio').value);
+    const cat    = document.getElementById('categoria').value;
+
+    if (!titulo || !autor || !anio) {
+        mostrarAlerta('Por favor completa todos los campos requeridos.', 'warning');
+        return;
+    }
+
+    libros.push({ id: nextId++, titulo, autor, anio, categoria: cat, disponible: true, lecturas: 0 });
+    renderizar();
+    mostrarAlerta(`✅ Libro "${titulo}" agregado correctamente.`, 'success');
+
+    document.getElementById('titulo').value = '';
+    document.getElementById('autor').value = '';
+    document.getElementById('anio').value = '';
+    bootstrap.Modal.getInstance(document.getElementById('modalLibro'))?.hide();
+}
+
+function eliminarLibro(id) {
+    const libro = libros.find(l => l.id === id);
+    if (!libro) return;
+    if (!confirm(`¿Eliminar "${libro.titulo}"?`)) return;
+    libros = libros.filter(l => l.id !== id);
+    renderizar();
+    mostrarAlerta(`🗑️ Libro "${libro.titulo}" eliminado.`, 'danger');
+}
+
+function toggleEstado(id) {
+    const libro = libros.find(l => l.id === id);
+    if (!libro) return;
+    libro.disponible = !libro.disponible;
+    if (!libro.disponible) libro.lecturas++;
+    renderizar();
+}
+
+function verDetalles(id) {
+    const l = libros.find(b => b.id === id);
+    if (!l) return;
+    const color = COLORES_CAT[l.categoria] || 'secondary';
+    document.getElementById('detalleContenido').innerHTML = `
+        <div class="text-center mb-3">
+            <span class="display-4">📖</span>
+            <h5 class="mt-2 fw-bold">${l.titulo}</h5>
+            <span class="badge bg-${color}">${l.categoria}</span>
+        </div>
+        <table class="table table-sm">
+            <tr><th>Autor</th><td>${l.autor}</td></tr>
+            <tr><th>Año</th><td>${l.anio}</td></tr>
+            <tr><th>Estado</th><td><span class="badge ${l.disponible ? 'bg-success' : 'bg-warning text-dark'}">
+                ${l.disponible ? 'Disponible' : 'Prestado'}</span></td></tr>
+            <tr><th>Lecturas</th><td>${l.lecturas}</td></tr>
+            <tr><th>ID</th><td>${l.id}</td></tr>
+        </table>`;
+    new bootstrap.Modal(document.getElementById('modalDetalle')).show();
+}
+
+function mostrarReporte() {
+    const top = [...libros].sort((a, b) => b.lecturas - a.lecturas).slice(0, 5);
+    const lista = top.map((l, i) =>
+        `<tr><td>${i+1}</td><td>${l.titulo}</td><td>${l.autor}</td><td>${l.lecturas}</td></tr>`
+    ).join('');
+    document.getElementById('detalleContenido').innerHTML = `
+        <h6 class="fw-bold mb-3">🏆 Top 5 libros más leídos</h6>
+        <table class="table table-sm table-striped">
+            <thead class="table-primary"><tr><th>#</th><th>Título</th><th>Autor</th><th>Lecturas</th></tr></thead>
+            <tbody>${lista}</tbody>
+        </table>`;
+    new bootstrap.Modal(document.getElementById('modalDetalle')).show();
+}
+
+function cambiarTema() {
+    modoOscuro = !modoOscuro;
+    document.body.classList.toggle('dark-mode', modoOscuro);
+    document.getElementById('iconTema').className = modoOscuro ? 'bi bi-sun' : 'bi bi-moon-stars';
+}
+
+function mostrarAlerta(msg, tipo) {
+    const div = document.createElement('div');
+    div.className = `alert alert-${tipo} alert-dismissible fade show`;
+    div.innerHTML = `${msg}<button type="button" class="btn-close" data-bs-dismiss="alert"></button>`;
+    document.getElementById('alertas').prepend(div);
+    setTimeout(() => div.remove(), 4000);
+}
+
+// ===== INIT =====
+document.addEventListener('DOMContentLoaded', renderizar);
+</script>
+</body>
+</html>
